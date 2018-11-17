@@ -3,8 +3,9 @@
 #include <iomanip>
 using namespace std;
 
-double findRiskPoint(int x, int y, int risk_x[], int risk_y[], int radius[], int risk[], int risk_num);
-void putData(int x[],int num);
+double Distance (double x1, double y1, double x2, double y2);
+double findRiskPoint(double x, double y, int risk_x[], int risk_y[], int radius[], int risk[], int risk_num);
+void putData(int x[], int num);
 void releaseMemory(int risk_x[], int risk_y[], int radius[], int risk[]);
 
 int main ()
@@ -28,7 +29,15 @@ int main ()
 		}
 		cout << endl;
 	}
+	
+	releaseMemory(risk_x, risk_y, radius, risk);
 	return 0;
+}
+
+double Distance (double x1, double y1, double x2, double y2)
+{
+	double d = sqrt( pow( (x1 - x2),2) + pow( (y1 - y2),2));
+	return d;
 }
 
 void putData(int x[], int num)
@@ -39,12 +48,12 @@ void putData(int x[], int num)
 	}
 }
 
-double findRiskPoint(int x, int y, int risk_x[], int risk_y[], int radius[], int risk[], int risk_num)
+double findRiskPoint(double x, double y, int risk_x[], int risk_y[], int radius[], int risk[], int risk_num)
 {
 	double risk_sum = 0;
 	for (int k = 0; k < risk_num; k++)
 	{
-		double temp = risk[k] * (radius[k] - sqrt( pow( (risk_x[k] - x),2) + pow( ( risk_y[k] - y),2))) / radius[k];
+		double temp = risk[k] * (radius[k] -Distance(risk_x[k], risk_y[k], x, y)) / radius[k];
 		if (temp > 0)
 			risk_sum += temp;
 	}
