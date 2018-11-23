@@ -6,20 +6,20 @@ using namespace std;
 double Distance (double x1, double y1, double x2, double y2);
 double RiskofPoint(double point[], int risk_x[], int risk_y[], int radius[], int risk[], int risk_num);
 double RiskofLine(int startPoint[2],int changePoint[2],double lenResidual[],int risk_x[],int risk_y[],int radius[],int risk[],int risk_num);
-//void findChange(start, end, fuelResidual, changePoint);
+//void findChange(start, endP, fuelResidual, changePoint);
 void putData(int x[], int num);
 void releaseMemory(int risk_x[], int risk_y[], int radius[], int risk[]);
 
-int turnCnt = 0;
+int turnCnt = 1;
 
 int main ()
 {
-    int n = 0, risk_num = 0, turn_weight = 0, dis_limit = 0, start[2] = {0} , end[2] = {0};
+    int n = 0, risk_num = 0, turn_weight = 0, dis_limit = 0, start[2] = {0} , endP[2] = {0};
     cin >> n >> risk_num >> turn_weight >> dis_limit;
     int *risk_x = new int[risk_num], *risk_y = new int[risk_num] , *radius = new int [risk_num], *risk = new int [risk_num];
-    double lenResidual[100] = {0}, fuelResidual[100] = {0};
-    int changePoint[2] = {0};
-    double cost = 0, min = 999999;
+    double lenResidual[100] = {0}, turnmin[100] = {0}, Re = 0, Ret = 0, min = 9999999;
+    int changePoint[2] = {0}, minChange[100][2] = {0}, answerCnt = 0;
+    bool noFuel = false;
     
     putData (risk_x, risk_num);
     putData (risk_y, risk_num);
@@ -27,29 +27,107 @@ int main ()
     putData (risk, risk_num);
     putData (start, 2);
     //putData (changepoint, 2)
-    putData (end, 2);
+    putData (endP, 2);
     
     
-    int distance_y = abs (start[1] - end[1]), distance_x = abs (start[0] - end[0]);
-	for (int i = 0; i <= distance_x; i++)
-	{
-			for (int j = 0; j <= distance_y; j++)
-			{
-				double temp = Distance(start[0] + i, start[1] + j, end[0], end[1]);
-				if (temp < dis_limit)
+    
+	while(turnCnt <= 10)
+  {
+    	noFuel = true;
+		double cost = 0;
+		turnmin[turnCnt] = 999999;	
+	    for (int i = start[0]; i <= endP[0]; i++)
+		{
+				for (int j = start[1]; j <= endP[1]; j++)
 				{
-					changePoint[0] = start[0] + i;
-					changePoint[1] = start[1] + j;
-					cost = RiskofLine(start, changePoint, lenResidual, risk_x, risk_y, radius, risk, risk_num) + RiskofLine(start, changePoint, lenResidual, risk_x, risk_y, radius, risk, risk_num);
-					if (min > cost)
-						min = cost;
-				}
-			} 
-	} 
-    cout << min;
-    //cout<<RiskofLine(start, end, lenResidual, risk_x, risk_y, radius, risk, risk_num);
-    //cout<<RiskofLine(start, changepoint, lenResidual, risk_x, risk_y, radius, risk, risk_num)<<"\n";
-    //cout<<RiskofLine(changepoint, end, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+					if (i == start[0] && j == start[1])
+						continue;
+					double temp = Distance(start[0], start[1], i, j) + Distance(endP[0], endP[1], i, j);
+				//	cout <<"(" <<i << "," << j << ") :"<< temp << " :";
+					if (temp < dis_limit)
+					{
+						noFuel = false;
+						lenResidual[turnCnt] = Re;
+						changePoint[0] = i;
+						changePoint[1] = j;
+						cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<changePoint[0] << "," << changePoint[1] << ") :";
+						cost = RiskofLine(start, changePoint, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+					//	cout << cost <<" then residual is ";
+						
+						double LineDistance = Distance( start[0], start[1], changePoint[0], changePoint[1]);
+						int PointCnt = (LineDistance + lenResidual[turnCnt]);
+						if (Re != 0 && i == endP[0] && j == endP[1])
+					    	if(LineDistance + lenResidual[turnCnt] == static_cast<int>(LineDistance + lenResidual[turnCnt]))
+					        	PointCnt--;
+						lenResidual[turnCnt] = LineDistance - PointCnt;
+					//	cout << lenResidual[turnCnt];
+						if (changePoint[0] != endP[0] || changePoint[1] != endP[1])
+							cost += RiskofLine(changePoint, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+						//cost += turn_weight * turnCnt;
+						cout  << cost;
+						if (turnmin[turnCnt] > cost)
+						{
+							minChange[turnCnt][0] = i;
+							minChange[turnCnt][1] = j;
+							turnmin[turnCnt] = cost;
+							Ret = lenResidual[turnCnt];
+						}
+						cout << "\n";
+						//cout << turnmin[turnCnt];
+					}
+				} 
+					
+		}
+		cost = RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+		//cout << turnmin[turnCnt] << " " << cost << " \n";
+		if (minChange[turnCnt][0] == endP[0] && minChange[turnCnt][1] == endP[1])
+		{
+			turnCnt--;
+			break;
+		}
+		
+		if(noFuel)
+		{
+			turnCnt--;
+			break;
+		}
+		
+		if (turnmin[turnCnt] > cost)
+		{
+			turnCnt--;
+			break;
+		} 
+		Re = Ret;
+		dis_limit -= Distance(start[0], start[1], minChange[turnCnt][0], minChange[turnCnt][1]);
+		start[0] = minChange[turnCnt][0];
+		start[1] = minChange[turnCnt][1];
+	    cout <<turnCnt<<" "<<minChange[turnCnt][0] <<" "<<minChange[turnCnt][1] <<" "<< turnmin[turnCnt] << endl;
+	    turnCnt++;
+	}
+	double sum = 0;
+	for(int i = 1; i <= turnCnt; i++ )
+	{
+		sum += turnmin[i];
+		cout <<i<<" "<< sum + i*turn_weight << endl;
+		double temp = sum + i*turn_weight;
+		if (min > temp)
+		{
+			min = temp;
+			answerCnt = i;
+		}
+	}
+	cout << endl;
+	cout << answerCnt;
+	for (int i = 1; i <= answerCnt; i++)
+		cout << " " << minChange[i][0] << " " << minChange[i][1];
+//	cout<<RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+//    cout<<RiskofLine(start, changePoint, lenResidual, risk_x, risk_y, radius, risk, risk_num)<<"\n";
+//    start[0] = 4;
+//    start[1] = 5;
+//    changePoint[0] = 4;
+//    changePoint[1] = 5;
+//    cout<<RiskofLine(start, changePoint, lenResidual, risk_x, risk_y, radius, risk, risk_num)<<"\n";
+//    cout<<RiskofLine(changePoint, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
     
     releaseMemory(risk_x, risk_y, radius, risk);
     return 0;
@@ -88,6 +166,8 @@ double RiskofLine(int startPoint[], int changePoint[] ,double lenResidual[] ,int
     int PointCnt = (LineDistance + lenResidual[turnCnt]);
     if(LineDistance + lenResidual[turnCnt] == static_cast<int>(LineDistance + lenResidual[turnCnt]))
         PointCnt--;
+   // if (PointCnt < 0)
+    //	PointCnt = 0;
     
     double** RiskPointOfLine = new double* [PointCnt];
     for(int i = 0 ; i < PointCnt ; i++)
@@ -112,13 +192,13 @@ double RiskofLine(int startPoint[], int changePoint[] ,double lenResidual[] ,int
     }
     delete [] RiskPointOfLine;
     
-    turnCnt++;
-    lenResidual[turnCnt] = LineDistance - PointCnt;
+    //turnCnt++;
+    //lenResidual[turnCnt] = LineDistance - PointCnt;
     
     return risk_sum;
 }
 
-//void findChange(start, end, fuelResidual, changePoint)
+//void findChange(start, endP, fuelResidual, changePoint)
 //{
 //	
 //}
