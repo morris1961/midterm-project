@@ -17,7 +17,7 @@ const int CHANGE_LIMIT = 10;
 
 int main ()
 {
-	clock_t a = clock();
+	//clock_t a = clock();
     int n = 0, risk_num = 0, turn_weight = 0, start[2] = {0} , endP[2] = {0};
     double dis_limit, min = 99999;
     cin >> n >> risk_num >> turn_weight >> dis_limit;
@@ -79,7 +79,7 @@ int main ()
 					lenResidual[turnCnt] = lastResidual;
 					changePoint[0] = i;
 					changePoint[1] = j;
-					cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<changePoint[0] << "," << changePoint[1] << ") :";
+					/*cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<changePoint[0] << "," << changePoint[1] << ") :";*/
 					cost = RiskofLine(start, changePoint, lenResidual, risk_x, risk_y, radius, risk, risk_num);
 				//	cout << cost <<" then residual is ";
 
@@ -96,8 +96,8 @@ int main ()
 				//	cout << lenResidual[turnCnt];
 					if (changePoint[0] != endP[0] || changePoint[1] != endP[1])
 						cost += RiskofLine(changePoint, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
-					cout <<"("<<changePoint[0] <<","<<changePoint[1]<<")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") :";
-					cout << cost;
+					/*cout <<"("<<changePoint[0] <<","<<changePoint[1]<<")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") :";
+					cout << cost;*/
 					//cout  << cost << "---" << turnCnt << ":" << cost + turn_weight*turnCnt;
 
 					//cost += turn_weight*turnCnt;
@@ -118,8 +118,8 @@ int main ()
                             tempResidual = lenResidual[turnCnt];
                         }
                     }*/
-                    cout << "---" << "latest min " << turnmin[turnCnt];
-					cout << "\n";
+                    /*cout << "---" << "latest min " << turnmin[turnCnt];
+					cout << "\n";*/
 
 				}
 			}
@@ -133,14 +133,14 @@ int main ()
         }
 		if (minChange[turnCnt][0] == endP[0] && minChange[turnCnt][1] == endP[1])
 		{
-			cout << "arrive !!" << turnCnt << endl;
+			/*cout << "arrive !!" << turnCnt << endl;*/
 			turnCnt--;
 			break;
 		}
 
 		if(noFuel)
 		{
-			cout << "nofuel !!" << turnCnt << endl;
+			/*cout << "nofuel !!" << turnCnt << endl;*/
 			turnCnt--;
 			break;
 		}
@@ -156,17 +156,17 @@ int main ()
 		dis_limit -= Distance(start[0], start[1], minChange[turnCnt][0], minChange[turnCnt][1]);
 		start[0] = minChange[turnCnt][0];
 		start[1] = minChange[turnCnt][1];
-	    cout << turnCnt << " " << minChange[turnCnt][0] <<" "<< minChange[turnCnt][1] << " " << turnmin[turnCnt] <<" residual distance" << dis_limit<< endl;
+	    /*cout << turnCnt << " " << minChange[turnCnt][0] <<" "<< minChange[turnCnt][1] << " " << turnmin[turnCnt] <<" residual distance" << dis_limit<< endl;*/
 	    turnCnt++;
 	}
 	//if (turnCnt > CHANGE_LIMIT)
 		//turnCnt -= 1;
-	cout << "turncount = "<< 0 << ",cost = " << min << endl;
+	/*cout << "turncount = "<< 0 << ",cost = " << min << endl;*/
 	double sum = 0;
 	for(int i = 1; i <= turnCnt; i++ )
 	{
 		sum += turnmin[i];
-		cout << "turncount = " << i << ",cost = " << sum + i*turn_weight << endl;
+		/*cout << "turncount = " << i << ",cost = " << sum + i*turn_weight << endl;*/
 		double temp = sum + i*turn_weight;
 		if (min > temp)
 		{
@@ -175,7 +175,8 @@ int main ()
 		}
 	}
 //	cout << endl;
-	cout <<"answer : "<< answerCnt;
+	/*cout <<"answer : "<< answerCnt;*/
+	cout << answerCnt;
 	if (answerCnt != 0)
 		for (int i = 1; i <= answerCnt; i++)
 			cout << " " << minChange[i][0] << " " << minChange[i][1];
@@ -190,8 +191,8 @@ int main ()
 
     releaseMemory(risk_x, risk_y, radius, risk);
 
-    clock_t b = clock();
-    cout << "\nTime cost : " << static_cast<double>(b - a) / CLOCKS_PER_SEC;
+   // clock_t b = clock();
+    /*cout << "\nTime cost : " << static_cast<double>(b - a) / CLOCKS_PER_SEC;*/
     return 0;
 }
 
