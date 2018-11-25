@@ -126,8 +126,8 @@ int main()
      turnCnt = 2;
      else
      turnCnt = 1;*/
-    
-    minCost = RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+    if (minCost > RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num))
+    	minCost = RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
     for(int i = 0; i < n; i++)
     {
         double tmpCost = RiskofLine(start, random2[i], lenResidual, risk_x, risk_y, radius, risk, risk_num);
@@ -135,7 +135,7 @@ int main()
         // cout << "tmp" << tmpCost << " " << minCost;
         if(Distance(random2[i][0], random2[i][1], start[0], start[1]) +  Distance(random2[i][0], random2[i][1], endP[0], endP[1]) < dis_limit)
         {
-            if(tmpCost + turn_weight < minCost)
+            if(tmpCost + 2 * turn_weight < minCost)
             {
                 minCost = tmpCost;
                 changex = random2[i][0];
