@@ -13,7 +13,7 @@ void releaseMemory(int risk_x[], int risk_y[], int radius[], int risk[]);
 
 bool countChange = false;
 int turnCnt = 1;
-const int CHANGE_LIMIT = 10;
+const int CHANGE_LIMIT = 1;
 
 int main ()
 {
