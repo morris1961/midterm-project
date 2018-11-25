@@ -83,7 +83,7 @@ int main()
         tmpCost += RiskofLine(random1[i], endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
         if(Distance(random1[i][0], random1[i][1], start[0], start[1]) +  Distance(random1[i][0], random1[i][1], endP[0], endP[1])< dis_limit)
         {
-            if(tmpCost < minCost)
+            if(tmpCost + turn_weight  < minCost)
             {
                 minCost = tmpCost;
                 changex = random1[i][0];
@@ -135,7 +135,7 @@ int main()
         // cout << "tmp" << tmpCost << " " << minCost;
         if(Distance(random2[i][0], random2[i][1], start[0], start[1]) +  Distance(random2[i][0], random2[i][1], endP[0], endP[1]) < dis_limit)
         {
-            if(tmpCost < minCost)
+            if(tmpCost + turn_weight < minCost)
             {
                 minCost = tmpCost;
                 changex = random2[i][0];
@@ -161,7 +161,6 @@ int main()
     {
         turnPoints[1][0] = changex;
         turnPoints[1][1] = changey;
-        
     }
     
     
@@ -183,6 +182,8 @@ int main()
     releaseMemory(risk_x, risk_y, radius, risk);
     return 0;
 }
+
+
 
 double Distance (double x1, double y1, double x2, double y2)
 {
