@@ -75,14 +75,23 @@ int main()
         // cout << random1[i][0] << " " << random1[i][1] << endl;
     }
     //cout << endl;
+    
+    //    for(int i = 0 ; i < risk_num ; i++)
+    //        for(int j = 0 ; j < n ; j++)
+    //            if(Distance(random1[j][0], random1[j][1], risk_x[i], risk_y[i]) < radius[i] )
+    //            {
+    //
+    //            }
+    
     int changex = 0, changey = 0;
     double minCost = min;
     for(int i = 0; i < n; i++)
     {
-        double tmpCost = RiskofLine(start, random1[i], lenResidual, risk_x, risk_y, radius, risk, risk_num);
-        tmpCost += RiskofLine(random1[i], endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+        
         if(Distance(random1[i][0], random1[i][1], start[0], start[1]) +  Distance(random1[i][0], random1[i][1], endP[0], endP[1])< dis_limit)
         {
+            double tmpCost = RiskofLine(start, random1[i], lenResidual, risk_x, risk_y, radius, risk, risk_num);
+            tmpCost += RiskofLine(random1[i], endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
             if(tmpCost + turn_weight  < minCost)
             {
                 minCost = tmpCost;
@@ -116,8 +125,8 @@ int main()
         random2[i] = new int[2];
     for(int i = 0; i < n; i++)
     {
-        random2[i][0] = (rand() % sToMid_xDis) + mid[0];
-        random2[i][1] = (rand() % sToMid_yDis) + mid[1];
+        random2[i][0] = (rand() % sToMid_xDis) + mid[0]; //修正
+        random2[i][1] = (rand() % sToMid_yDis) + mid[1]; //修正
         // cout << random2[i][0] << " " << random2[i][1] << endl;
     }
     // cout << endl;
@@ -126,16 +135,19 @@ int main()
      turnCnt = 2;
      else
      turnCnt = 1;*/
-    if (minCost > RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num))
-    	minCost = RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+    
+    minCost = RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
     for(int i = 0; i < n; i++)
     {
-        double tmpCost = RiskofLine(start, random2[i], lenResidual, risk_x, risk_y, radius, risk, risk_num);
-        tmpCost += RiskofLine(random2[i], endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+        
         // cout << "tmp" << tmpCost << " " << minCost;
         if(Distance(random2[i][0], random2[i][1], start[0], start[1]) +  Distance(random2[i][0], random2[i][1], endP[0], endP[1]) < dis_limit)
         {
-            if(tmpCost + 2 * turn_weight < minCost)
+            
+            double tmpCost = RiskofLine(start, random2[i], lenResidual, risk_x, risk_y, radius, risk, risk_num);
+            tmpCost += RiskofLine(random2[i], endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+            
+            if(tmpCost + turn_weight < minCost)
             {
                 minCost = tmpCost;
                 changex = random2[i][0];
@@ -205,15 +217,15 @@ void FindResidual( int startPoint[] , int changePoint[] , double residual[] )
     
     int PointCnt = 0;
     PointCnt = (LineDistance + residual[turnCnt]);
-    if(LineDistance + residual[turnCnt] == static_cast<int>(LineDistance + residual[turnCnt]))
-    {
-        if(PointCnt == 1)
-        {
-            PointCnt = 1;
-        }
-        else
-            PointCnt-- ;
-    }
+    //    //if(LineDistance + residual[turnCnt] == static_cast<int>(LineDistance + residual[turnCnt]))
+    //    //{
+    //        if(PointCnt == 1)
+    //        {
+    //            PointCnt = 1;
+    //        }
+    //        else
+    //            PointCnt-- ;
+    //    }
     
     turnCnt++;
     residual[turnCnt] = LineDistance - PointCnt;
@@ -227,9 +239,11 @@ double RiskofPoint(double point[], int risk_x[], int risk_y[], int radius[], int
     double risk_sum = 0;
     for (int k = 0; k < risk_num; k++)
     {
-        double temp = risk[k] * (radius[k] -Distance(risk_x[k], risk_y[k], point[0], point[1])) / radius[k];
-        if (temp > 0)
+        if(Distance(point[0], point[1], risk_x[k], risk_y[k]) < radius[k] )
+        {
+            double temp = risk[k] * (radius[k] -Distance(risk_x[k], risk_y[k], point[0], point[1])) / radius[k];
             risk_sum += temp;
+        }
     }
     return risk_sum;
 }
