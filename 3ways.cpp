@@ -131,11 +131,7 @@ int main()
 		
 		else if (mode == 2)
 		{
-			int CTP;
-			if (turnCnt == 2)
-				CTP = 1;
-			else
-				CTP = (rand() % (turnCnt - 1)) + 1; //change turn point
+			int CTP = (rand() % (turnCnt - 1)) + 1; //change turn point
 			int TP[2][2]; // temp point
     		double temp = minCost; 
     		TP[1][0] = turnPoints[CTP][0];
@@ -205,11 +201,7 @@ int main()
 	    	{
 	    		if (turnCnt <= 2)
 	    			break;
-	    		int ETP;
-	    		if (turnCnt == 3)
-	    			ETP = 1;
-	    		else
-					ETP = (rand() % (turnCnt - 2)) + 1; //eliminate turn point
+	    		int ETP = (rand() % (turnCnt - 2)) + 1; //eliminate turn point
 				double tempCost = 0, SP = 0;
 				lenResidual[0] = 0;
 				if (ETP == 1)
