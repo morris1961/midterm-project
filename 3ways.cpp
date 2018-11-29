@@ -12,6 +12,7 @@ double Distance (double x1, double y1, double x2, double y2);
 double RiskofPoint(double point[], int risk_x[], int risk_y[], int radius[], int risk[], int risk_num);
 double RiskofLine(int startPoint[2],int changePoint[2],double lenResidual[],int risk_x[],int risk_y[],int radius[],int risk[],int risk_num);
 
+const int k_limit = 1600, e_limit = 20000;
 int turnCnt = 1;
 int main()
 {
@@ -19,7 +20,7 @@ int main()
     int n = 0, risk_num = 0, turn_weight = 0, start[2] = {0} , endP[2] = {0};
     double dis_limit, min = 99999;
     double lenResidual[2] = {0}, minCost = 0;
-    int turnPoints[10][2] = {0};
+    int turnPoints[100][2] = {0};
     
     cin >> n >> risk_num >> turn_weight >> dis_limit;
     
@@ -32,23 +33,25 @@ int main()
     putData (endP, 2);
 
     minCost = RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
-    cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") :" << minCost << endl;
+//    cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") :" << minCost << "\n";
     srand(time(nullptr));
     int k = 0, turnCnt = 1;
-    
-    while(k < 5)
+    for (int k = 0; k < k_limit; k++)
     {
     	int e = 0, mode = 0; 
     	if (turnCnt == 1)
     		mode = 1;
-    	else
+    	else if (turnCnt == 2)
     		mode = (rand() % 2) + 1;
-    	cout << mode << " :\n";
+    	else
+    		mode = (rand() % 3) + 1;
+//    	cout << mode << " :\n";
+
     	if (mode == 1)
     	{
 			int TP[2]; // temp point
     		double temp = minCost; 
-    		while (e < 10)
+    		while (e < e_limit)
 	    	{
 	    		turnPoints[turnCnt][0] = static_cast <double>((rand() / 32767.0)) * (n);
 	    		turnPoints[turnCnt][1] = static_cast <double>((rand() / 32767.0)) * (n);
@@ -65,18 +68,18 @@ int main()
 	    			continue;
 				}
 				
-				cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") +";
+//				cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") + ";
 				lenResidual[0] = 0;
 				double tempCost = RiskofLine(start, turnPoints[1], lenResidual, risk_x, risk_y, radius, risk, risk_num);
 				for (int i = 1; i < turnCnt; i++)
 				{
-					cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") +";
+//					cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") + ";
 					tempCost += RiskofLine(turnPoints[i], turnPoints[i + 1], lenResidual, risk_x, risk_y, radius, risk, risk_num);
 				}
-				cout << "(" <<turnPoints[turnCnt][0] << "," << turnPoints[turnCnt][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") : ";
+//				cout << "(" <<turnPoints[turnCnt][0] << "," << turnPoints[turnCnt][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") : ";
 				tempCost += RiskofLine(turnPoints[turnCnt], endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
 				tempCost += turnCnt * turn_weight;
-				cout << tempCost << endl;
+//				cout << tempCost << endl;
 				
 				if(minCost > tempCost)
 				{
@@ -86,7 +89,7 @@ int main()
 				}
 				e++;
 			}
-			cout << minCost << "\n";
+//			cout << minCost << "\n";
 			if (minCost != temp)
 			{
 				turnPoints[turnCnt][0] = TP[0];
@@ -94,22 +97,26 @@ int main()
 				turnCnt++;
 			}
 			
-			cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") +";
-			for (int i = 1; i < turnCnt-1; i++)
-			{
-				cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") +";
-			}
-			cout << "(" <<turnPoints[turnCnt-1][0] << "," << turnPoints[turnCnt-1][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ")\n";
+//			cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") +";
+//			for (int i = 1; i < turnCnt-1; i++)
+//			{
+//				cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") +";
+//			}
+//			cout << "(" <<turnPoints[turnCnt-1][0] << "," << turnPoints[turnCnt-1][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ")\n";
 		}
 		
 		else if (mode == 2)
 		{
-			int CTP = (rand() % (turnCnt - 1)) + 1; //change turn point
+			int CTP;
+			if (turnCnt == 2)
+				CTP = 1;
+			else
+				CTP = (rand() % (turnCnt - 1)) + 1; //change turn point
 			int TP[2][2]; // temp point
     		double temp = minCost; 
     		TP[1][0] = turnPoints[CTP][0];
     		TP[1][1] = turnPoints[CTP][1];
-    		while (e < 10)
+    		while (e < e_limit)
 	    	{
 	    		turnPoints[CTP][0] = static_cast <double>((rand() / 32767.0)) * (n);
 	    		turnPoints[CTP][1] = static_cast <double>((rand() / 32767.0)) * (n);
@@ -126,18 +133,18 @@ int main()
 	    			continue;
 				}
 				
-				cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") +";
+//				cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") + ";
 				lenResidual[0] = 0;
 				double tempCost = RiskofLine(start, turnPoints[1], lenResidual, risk_x, risk_y, radius, risk, risk_num);
 				for (int i = 1; i < turnCnt-1; i++)
 				{
-					cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") +";
+//					cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") + ";
 					tempCost += RiskofLine(turnPoints[i], turnPoints[i + 1], lenResidual, risk_x, risk_y, radius, risk, risk_num);
 				}
-				cout << "(" <<turnPoints[turnCnt-1][0] << "," << turnPoints[turnCnt-1][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") : ";
+//				cout << "(" <<turnPoints[turnCnt-1][0] << "," << turnPoints[turnCnt-1][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") : ";
 				tempCost += RiskofLine(turnPoints[turnCnt-1], endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
 				tempCost += (turnCnt-1) * turn_weight;
-				cout << tempCost << endl;
+//				cout << tempCost << endl;
 				
 				if(minCost > tempCost)
 				{
@@ -148,7 +155,7 @@ int main()
 				e++;
 			}
 			
-			cout << minCost << "\n";
+//			cout << minCost << "\n";
 			if (minCost != temp)
 			{
 				turnPoints[CTP][0] = TP[0][0];
@@ -160,20 +167,80 @@ int main()
 				turnPoints[CTP][1] = TP[1][1];
 			}
 			
-			cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") +";
-			for (int i = 1; i < turnCnt-1; i++)
-			{
-				cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") +";
-			}
-			cout << "(" <<turnPoints[turnCnt-1][0] << "," << turnPoints[turnCnt-1][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ")\n";
+//			cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") + ";
+//			for (int i = 1; i < turnCnt-1; i++)
+//			{
+//				cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") + ";
+//			}
+//			cout << "(" <<turnPoints[turnCnt-1][0] << "," << turnPoints[turnCnt-1][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ")\n";
 		}
-//		
-//	    else if (mode == 3)
-//	    {
-//	    	
-//		}
+
+	    else if (mode == 3)
+	    {
+	    	while (e < e_limit)
+	    	{
+	    		if (turnCnt <= 2)
+	    			break;
+	    		int ETP;
+	    		if (turnCnt == 3)
+	    			ETP = 1;
+	    		else
+					ETP = (rand() % (turnCnt - 2)) + 1; //eliminate turn point
+				double tempCost = 0, SP = 0;
+				lenResidual[0] = 0;
+				if (ETP == 1)
+				{
+//					cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[2][0] << "," << turnPoints[2][1] << ") + ";
+					tempCost = RiskofLine(start, turnPoints[2], lenResidual, risk_x, risk_y, radius, risk, risk_num);
+					SP = 2;
+				}
+				else
+				{
+//					cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") + ";
+					tempCost = RiskofLine(start, turnPoints[1], lenResidual, risk_x, risk_y, radius, risk, risk_num);
+					SP = 1;
+				}	
+				
+				
+				for (int i = SP; i < turnCnt-1; i++)
+				{
+					if (i == ETP)
+						continue;
+//					cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") + " ;
+					tempCost += RiskofLine(turnPoints[i], turnPoints[i + 1], lenResidual, risk_x, risk_y, radius, risk, risk_num);
+				}
+//				cout << "(" <<turnPoints[turnCnt-1][0] << "," << turnPoints[turnCnt-1][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") : ";
+				tempCost += RiskofLine(turnPoints[turnCnt-1], endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
+				tempCost += (turnCnt-2) * turn_weight;
+//				cout << tempCost << endl;
+				
+				if(minCost > tempCost)
+				{
+					minCost = tempCost;
+					for (int i = ETP; i < turnCnt-1; i++)
+					{
+						turnPoints[i][0] = turnPoints[i+1][0];
+						turnPoints[i][1] = turnPoints[i+1][1];
+					}
+					turnCnt--;
+				}
+				e++;	
+			}
 			
-		k++;
+//	    	cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<turnPoints[1][0] << "," << turnPoints[1][1] << ") + ";
+//			for (int i = 1; i < turnCnt-1; i++)
+//			{
+//				cout <<"("<<turnPoints[i][0] << "," << turnPoints[i][1]<<")"<<" to "<<"(" <<turnPoints[i+1][0] << "," << turnPoints[i+1][1] << ") + ";
+//			}
+//			cout << "(" <<turnPoints[turnCnt-1][0] << "," << turnPoints[turnCnt-1][1] << ")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ")\n";
+//			cout << minCost << "\n";
+ 		}
+	}
+	
+	cout << turnCnt-1;
+	for (int i = 1; i < turnCnt; i++)
+	{
+		cout << " " << turnPoints[i][0] << " " << turnPoints[i][1];
 	}
     
     releaseMemory(risk_x, risk_y, radius, risk);
