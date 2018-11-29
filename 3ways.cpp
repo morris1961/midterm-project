@@ -31,30 +31,6 @@ int main()
     putData (risk, risk_num);
     putData (start, 2);
     putData (endP, 2);
-    
-    int min_x, min_y, max_x, max_y;
-    if (start[0] > endP[0])
-    {
-        max_x = start[0];
-        min_x = endP[0];
-    }
-    else
-    {
-        max_x = endP[0];
-        min_x = start[0];
-    }
-    if (start[1] > endP[1])
-    {
-        max_y = start[1];
-        min_y = endP[1];
-    }
-    else
-    {
-        max_y = endP[1];
-        min_y = start[1];
-    }
-    
-    int dis_x = max_x - min_x, dis_y = max_y - min_y;
 
     minCost = RiskofLine(start, endP, lenResidual, risk_x, risk_y, radius, risk, risk_num);
     cout <<"("<<start[0]<<","<<start[1]<<")"<<" to "<<"(" <<endP[0] << "," << endP[1] << ") :" << minCost << "\n";
@@ -77,8 +53,8 @@ int main()
     		double temp = minCost; 
     		while (e < e_limit)
 	    	{
-	    		turnPoints[turnCnt][0] = static_cast <double>((rand() / 32767.0)) * (dis_x) + min_x;
-	    		turnPoints[turnCnt][1] = static_cast <double>((rand() / 32767.0)) * (dis_y) + min_y;
+	    		turnPoints[turnCnt][0] = static_cast <double>((rand() / 32767.0)) * n;
+	    		turnPoints[turnCnt][1] = static_cast <double>((rand() / 32767.0)) * n;
 	    		double Dis = Distance (turnPoints[1][0], turnPoints[1][1], start[0], start[1]);
 	    		for (int i = 1; i < turnCnt; i++)
 	    		{
@@ -138,8 +114,8 @@ int main()
     		TP[1][1] = turnPoints[CTP][1];
     		while (e < e_limit)
 	    	{
-	    		turnPoints[CTP][0] = static_cast <double>((rand() / 32767.0)) * (dis_x) + min_x;
-	    		turnPoints[CTP][1] = static_cast <double>((rand() / 32767.0)) * (dis_y) + min_y;
+	    		turnPoints[CTP][0] = static_cast <double>((rand() / 32767.0)) * n;
+	    		turnPoints[CTP][1] = static_cast <double>((rand() / 32767.0)) * n;
 	    		double Dis = Distance (turnPoints[1][0], turnPoints[1][1], start[0], start[1]);
 	    		for (int i = 1; i < turnCnt-1; i++)
 	    		{
